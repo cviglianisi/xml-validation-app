@@ -3,9 +3,6 @@ package it.mds.sdk.TextXMLAgainstXSD;
 import it.mds.sdk.TextXMLAgainstXSD.Model.PercorsoFileXML;
 import it.mds.sdk.TextXMLAgainstXSD.Model.PercorsoFileXSD;
 import it.mds.sdk.TextXMLAgainstXSD.Model.ResponseWarningMessage;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 
 import java.io.FileInputStream;
@@ -17,23 +14,24 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 
-public class ConfigurazioneTestXML {
+public class TestXMLConfiguration {
     private static final Logger log = Logger.getLogger("log");
     private static final String FILE_CONF = "application.properties";
-    final PercorsoFileXML percorsoFileXML;
-    final PercorsoFileXSD percorsoFileXSD;
+    private static final String PROPERTIES_FILE_PATH = "/sdk/testXML/properties/";
+    final PercorsoFileXML xmlPathFile;
+    final PercorsoFileXSD xsdPathFile;
     final ResponseWarningMessage responseWarningMessage;
 
-    public ConfigurazioneTestXML() {
-        this(leggiConfigurazioneEsterna());
+    public TestXMLConfiguration() {
+        this(readExternalConfiguration());
     }
 
-    public ConfigurazioneTestXML(final Properties conf) {
-        this.percorsoFileXML = PercorsoFileXML.builder()
-                .withPercorso(conf.getProperty("percorso.xml", ""))
+    public TestXMLConfiguration(final Properties conf) {
+        this.xmlPathFile = PercorsoFileXML.builder()
+                .withPercorso(conf.getProperty("path.xml", ""))
                 .build();
-        this.percorsoFileXSD = PercorsoFileXSD.builder()
-                .withPercorso(conf.getProperty("percorso.xsd", ""))
+        this.xsdPathFile = PercorsoFileXSD.builder()
+                .withPercorso(conf.getProperty("path.xsd", ""))
                 .build();
         this.responseWarningMessage = ResponseWarningMessage.builder()
                 .withMessage(conf.getProperty("validation.warning.message", ""))
@@ -41,10 +39,10 @@ public class ConfigurazioneTestXML {
     }
 
 
-    private static Properties leggiConfigurazione(final String nomeFile) {
+    private static Properties readConfiguration(final String nomeFile) {
         log.info("{}.leggiConfigurazione - nome file: " +  nomeFile);
         final Properties prop = new Properties();
-        try (final InputStream is = ConfigurazioneTestXML.class.getClassLoader().getResourceAsStream(nomeFile)) {
+        try (final InputStream is = TestXMLConfiguration.class.getClassLoader().getResourceAsStream(nomeFile)) {
             prop.load(is);
         } catch (IOException e) {
             log.severe(e.getMessage());
@@ -52,15 +50,14 @@ public class ConfigurazioneTestXML {
         return prop;
     }
 
-    private static Properties leggiConfigurazioneEsterna() {
+    private static Properties readExternalConfiguration() {
         Properties properties = new Properties();
-
-        try (InputStreamReader in = new InputStreamReader(new FileInputStream("/sdk/testXML/properties/" + FILE_CONF),
+        try (InputStreamReader in = new InputStreamReader(new FileInputStream(PROPERTIES_FILE_PATH + FILE_CONF),
                 StandardCharsets.UTF_8)) {
             properties.load(in);
         } catch (IOException e) {
             log.severe(e.getMessage());
-            return leggiConfigurazione(FILE_CONF);
+            return readConfiguration(FILE_CONF);
         }
         return properties;
     }

@@ -1,10 +1,7 @@
 package it.mds.sdk.TextXMLAgainstXSD;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 public final class ErrorTrace {
@@ -24,7 +21,7 @@ public final class ErrorTrace {
 	public StringBuffer getErrors()
 	{
 		StringBuffer oBuffer = new StringBuffer(500);
-		ConfigurazioneTestXML configurazioneTestXML = new ConfigurazioneTestXML();
+		TestXMLConfiguration configurazioneTestXML = new TestXMLConfiguration();
 		for (Object oError : this.oErrors) {
 			if (oBuffer.length() > 10000000) {
 				StringBuffer messaggioDimensioneElevata = new StringBuffer(configurazioneTestXML.responseWarningMessage.getMessage());
